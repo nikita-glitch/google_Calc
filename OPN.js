@@ -1,4 +1,4 @@
-function Convert(string) {
+export function convert(string) {
   let priority = {
     "+": 1,
     "-": 1,
@@ -7,14 +7,15 @@ function Convert(string) {
     "(": 3,
     ")": 2,
   };
+  string = string.split('');
   let stack = [];
   let out = "";
-  for (let i = 0; i < string.length; i++) {
-    if (!isNaN(string[i])) {
-      out += string[i];
+  for (const char of string) {
+    if (!isNaN(char)) {
+      out += char
     } else {
       if (stack.length == 0) {
-        stack.push(string[i]);
+        stack.push(char);
       }
     }
   }
