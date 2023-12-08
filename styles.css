@@ -1,8 +1,12 @@
+*{
+  font-size: 18px;
+}
 body {
   margin: 0;
   display: flex;
   justify-content: center;
   background: #202124;
+  
 }
 
 .calc_body {
@@ -67,6 +71,11 @@ button {
   border-radius: 4px;
 }
 
+#equality:hover {
+  background: #aecbfa;
+  border-color: #aecbfa;
+}
+
 button:hover {
   background: #52585c;
   cursor: pointer;
@@ -75,7 +84,7 @@ button:hover {
 .operation {
   background: #5f6368;
   color: #e8eaed;
-  
+
   border-radius: 4px;
 }
 
@@ -83,7 +92,10 @@ button:hover {
   background: #3c4043;
   color: #e8eaed;
 }
-
+#point:hover {
+  background: #52585c;
+  cursor: pointer;
+}
 .a {
   display: grid;
   margin: 0 0 10px 0;
@@ -106,10 +118,12 @@ button:hover {
   color: #8ab4f8;
   ;
 }
+
 .outputs:hover {
   background: #303134;
   border: 1px solid #303134;
 }
-#focused_outputs{
+
+#focused_outputs {
   border: 1px solid #8ab4f8;
 }

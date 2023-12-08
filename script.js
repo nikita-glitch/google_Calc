@@ -137,10 +137,14 @@ document.addEventListener("keypress", (e) => {
 
 history.addEventListener("click", (e) => {
   //ne udalyaet
-
+  console.log(history.child);
   if (history.childNodes.length > 1) {
-    //document.body.removeChild(prevOps)
-    return;
+    history.remove();
+    let div = document.createElement('div');
+    div.setAttribute('class', 'history');
+    div.innerHTML = 'history';
+    let [outputs] = document.getElementsByClassName('outputs');
+    outputs.prepend(div);
   }
   if (operationStorage.length == 0) {
     return;
