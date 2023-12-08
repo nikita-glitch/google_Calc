@@ -2,23 +2,30 @@ body {
   margin: 0;
   display: flex;
   justify-content: center;
-  background-color: #d0d9f8;
+  background: #202124;
 }
+
 .calc_body {
   margin: 40px 0 0 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #9dd2ea;
+
   justify-content: center;
   border-radius: 4px;
   padding: 20px 50px;
 }
+
 .outputs {
   display: flex;
-  flex-direction: column;
+  width: 430px;
+  justify-content: space-between;
+  padding: 20px 5px;
+  background: #3c4043;
+  color: #e8eaed;
+  border-radius: 10px;
+  white-space: nowrap;
   margin: 0 0 20px 0;
-  box-shadow: 0 4px rgba(0,0,0,0.2)
 }
 
 .digits {
@@ -27,19 +34,74 @@ body {
   grid-template-columns: repeat(3, 100px);
   gap: 10px;
 }
+
 .operations {
   display: grid;
-  grid-template-columns:  100px;
+  grid-template-columns: 100px;
   gap: 10px;
   height: 200px;
 
 }
+
 .button_container {
   display: flex;
   justify-content: center;
 }
-.output {
-  width: 200px;
-  padding: 50px 50px;
-  background-color: #fff;
+
+/* .output {
+  
+} */
+
+button {
+  background: #3c4043;
+  color: #e8eaed;
+  border: 1px solid #3c4043;
+  border-radius: 4px;
+}
+
+#equality {
+  background: #8ab4f8;
+  color: #202124;
+  border: 1px solid #8ab4f8;
+  border-radius: 4px;
+}
+
+button:hover {
+  background: #52585c;
+  cursor: pointer;
+}
+
+.operation {
+  background: #5f6368;
+  color: #e8eaed;
+  
+  border-radius: 4px;
+}
+
+#point {
+  background: #3c4043;
+  color: #e8eaed;
+}
+
+.a {
+  display: grid;
+  margin: 0 0 10px 0;
+  grid-template-columns: repeat(4, 100px);
+  height: 42.5px;
+  gap: 10px;
+}
+
+.prevOps {
+  overflow: auto;
+  position: absolute;
+  padding: 0 16px 16px 16px;
+  max-height: 309px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #fff;
+  border-radius: 4px;
+  background: #202124;
+
+  color: #8ab4f8;
+  ;
 }
