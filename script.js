@@ -171,18 +171,6 @@ history.addEventListener("click", (e) => {
   });
 });
 
-sin.addEventListener("click", (e) => {
-  let buf;
-  let strEnd = output.innerHTML.at(output.innerHTML.length - 1);
-  if (allowedSymbols.indexOf(strEnd) != -1) {
-  }
-});
-cos.addEventListener("click", (e) => {
-  let buf;
-  let strEnd = output.innerHTML.at(output.innerHTML.length - 1);
-  if (allowedSymbols.indexOf(strEnd) != -1) {
-  }
-});
 document.addEventListener("click", (e) => {
   let target = e.target;
   if (target.id != "sin" && target.id != "cos" && target.id != "log") {
@@ -218,3 +206,13 @@ document.addEventListener("click", (e) => {
       break;
   }
 });
+document.addEventListener('click', (e) => {
+  let target = e.target;
+  if (target.className != 'outputs') {
+    let [outputs] = document.getElementsByClassName('outputs');
+    outputs.removeAttribute('id')
+    return
+  }
+  target.setAttribute('id', 'focused_outputs');
+})
+
