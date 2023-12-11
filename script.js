@@ -1,8 +1,6 @@
 //import { convert } from "./OPN";
 let [div] = document.getElementsByClassName("digits");
 let [output] = document.getElementsByClassName("output");
-let [history] = document.getElementsByClassName("history");
-history.innerHTML = "history";
 let allowedSymbols = ["*", "/", "+", "-", "="];
 let operationStorage = [];
 let result = 0;
@@ -24,7 +22,7 @@ document.addEventListener("click", (e) => {
     if (output.innerHTML == 0 && target.innerHTML == 0) {
       return;
     }
-    if (target.className == "digit_button" && output.innerHTML == result ) {
+    if (target.className == "digit_button" && output.innerHTML == result) {
       output.innerHTML = "";
       result = 0;
     }
@@ -135,44 +133,51 @@ document.addEventListener("keypress", (e) => {
   }
 });
 
-history.addEventListener("click", (e) => {
-  //ne udalyaet
-  console.log(history.child);
-  if (history.childNodes.length > 1) {
-    history.remove();
-    let div = document.createElement('div');
-    div.setAttribute('class', 'history');
-    div.innerHTML = 'history';
-    let [outputs] = document.getElementsByClassName('outputs');
-    outputs.prepend(div);
+document.addEventListener("click", (e) => {
+  let [history] = document.getElementsByClassName("history");
+
+  if (e.target.className != 'history') {
+    return
   }
   if (operationStorage.length == 0) {
     return;
   }
-  let prevOps = document.createElement("div");
-  prevOps.setAttribute("class", "prevOps");
-  history.append(prevOps);
-  prevOps.tabIndex = 0;
-  for (const item of operationStorage) {
-    let line = document.createElement("span");
-    let result = document.createElement("span");
-    let container = document.createElement("div");
-    prevOps.append(container);
-    line.setAttribute("class", "line");
-    result.setAttribute("class", "result");
-    line.innerHTML = item.line;
-    result.innerHTML = item.result;
-    container.append(line);
-    container.append("=");
-    container.append(result);
-  }
-  prevOps.addEventListener("click", (e) => {
-    let target = e.target;
-    if (target.tagName != "SPAN") {
-      return;
+  if (history.childNodes.length > 1) {
+    history.remove();
+    history = null;
+    let div = document.createElement("div");
+    div.setAttribute("class", "history");
+    div.innerHTML = "history";
+    let [outputs] = document.getElementsByClassName("outputs");
+    outputs.prepend(div);
+    console.log(document.getElementsByClassName('history'));
+    
+  } else {
+    let prevOps = document.createElement("div");
+    prevOps.setAttribute("class", "prevOps");
+    history.append(prevOps);
+    prevOps.tabIndex = 0;
+    for (const item of operationStorage) {
+      let line = document.createElement("span");
+      let result = document.createElement("span");
+      let container = document.createElement("div");
+      prevOps.append(container);
+      line.setAttribute("class", "line");
+      result.setAttribute("class", "result");
+      line.innerHTML = item.line;
+      result.innerHTML = item.result;
+      container.append(line);
+      container.append("=");
+      container.append(result);
     }
-    output.innerHTML = target.innerHTML;
-  });
+    prevOps.addEventListener("click", (e) => {
+      let target = e.target;
+      if (target.tagName != "SPAN") {
+        return;
+      }
+      output.innerHTML = target.innerHTML;
+    });
+  }
 });
 
 document.addEventListener("click", (e) => {
@@ -187,21 +192,21 @@ document.addEventListener("click", (e) => {
   }
   buf = eval(buf);
   switch (target.id) {
-    case 'sin':
+    case "sin":
       output.innerHTML = result = Math.sin(buf);
       operationStorage.push({
         line: `sin(${buf})`,
         result: Math.sin(buf),
       });
       break;
-    case 'cos':
+    case "cos":
       output.innerHTML = result = Math.cos(buf);
       operationStorage.push({
         line: `cos(${buf})`,
         result: Math.cos(buf),
       });
       break;
-    case 'log':
+    case "log":
       output.innerHTML = result = Math.log10(buf);
       operationStorage.push({
         line: `log(${buf})`,
@@ -210,13 +215,12 @@ document.addEventListener("click", (e) => {
       break;
   }
 });
-document.addEventListener('click', (e) => {
+document.addEventListener("click", (e) => {
   let target = e.target;
-  if (target.className != 'outputs') {
-    let [outputs] = document.getElementsByClassName('outputs');
-    outputs.removeAttribute('id')
-    return
+  if (target.className != "outputs") {
+    let [outputs] = document.getElementsByClassName("outputs");
+    outputs.removeAttribute("id");
+    return;
   }
-  target.setAttribute('id', 'focused_outputs');
-})
-
+  target.setAttribute("id", "focused_outputs");
+});

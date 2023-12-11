@@ -105,6 +105,7 @@ button:hover {
 }
 
 .prevOps {
+  display: block;
   overflow: auto;
   position: absolute;
   padding: 0 16px 16px 16px;
