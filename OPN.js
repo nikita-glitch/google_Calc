@@ -11,6 +11,7 @@ export function convert(string) {
   let stack = [];
   let out = "";
   for (const char of string) {
+    
     if (!isNaN(char)) {
       out += char
     } else {

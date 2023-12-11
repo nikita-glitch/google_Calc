@@ -15,67 +15,84 @@ for (let i = 0; i <= 9; i++) {
 
 document.addEventListener("click", (e) => {
   let target = e.target;
+  let strEnd = output.innerHTML.at(output.innerHTML.length - 1);
   if (target.tagName != "BUTTON") {
     return;
   }
+
   if (target.className == "digit_button") {
-    if (output.innerHTML == 0 && target.innerHTML == 0) {
+    if (output.innerHTML == "0" && target.innerHTML == "0") {
       return;
     }
-    if (target.className == "digit_button" && output.innerHTML == result) {
+    if (
+      target.className == "digit_button" &&
+      output.innerHTML == result &&
+      output.innerHTML == "0"
+    ) {
       output.innerHTML = "";
       result = 0;
     }
-    if (output.innerHTML == "0" && target.innerHTML != 0) {
+    if (output.innerHTML == "0" && target.innerHTML != "0") {
       output.innerHTML = "";
     }
+
     output.innerHTML += target.innerHTML;
   } else if (target.className == "operation") {
-    switch (target.innerHTML) {
-      case "+":
-        output.innerHTML += "+";
-        break;
-      case "-":
-        output.innerHTML += "-";
-        break;
-      case "*":
-        output.innerHTML += "*";
-        break;
-      case "/":
-        output.innerHTML += "/";
-        break;
-      case "=":
-        result = eval(output.innerHTML);
-        operationStorage.push({
-          line: output.innerHTML,
-          result: result,
-        });
-        output.innerHTML = result;
-        break;
-      case "C":
-        output.innerHTML = "0";
-        result = 0;
-        break;
-      case ".":
-        let strEnd = output.innerHTML.at(output.innerHTML.length - 1);
-        if (output.innerHTML.endsWith(".")) {
-          return;
-        }
-        if (output.innerHTML == "0") {
-          output.innerHTML += ".";
-        } else if (allowedSymbols.indexOf(strEnd) != -1) {
-          output.innerHTML += "0.";
-        } else {
-          output.innerHTML += ".";
-        }
-        break;
+    if (allowedSymbols.indexOf(strEnd) != -1 && target.id != 'clear') {
+    } else {
+      switch (target.innerHTML) {
+        case "+":
+          output.innerHTML += "+";
+          break;
+        case "-":
+          output.innerHTML += "-";
+          break;
+        case "*":
+          output.innerHTML += "*";
+          break;
+        case "/":
+          output.innerHTML += "/";
+          break;
+        case "=":
+          result = eval(output.innerHTML);
+          operationStorage.push({
+            line: output.innerHTML,
+            result: result,
+          });
+          output.innerHTML = result;
+          break;
+        case "C":
+          output.innerHTML = "0";
+          result = 0;
+          break;
+        case ".":
+          let strEnd = output.innerHTML.at(output.innerHTML.length - 1);
+          if (output.innerHTML.endsWith(".")) {
+            return;
+          }
+          if (output.innerHTML == "0") {
+            output.innerHTML += ".";
+          } else if (allowedSymbols.indexOf(strEnd) != -1) {
+            output.innerHTML += "0.";
+          } else {
+            output.innerHTML += ".";
+          }
+          break;
+      }
     }
   }
 });
 
 document.addEventListener("keypress", (e) => {
   let buf;
-  
+  if ((output.innerHTML == "0" || output.innerHTML == "") && e.key == "-") {
+  } else if (
+    (output.innerHTML == "0" || output.innerHTML == "") &&
+    allowedSymbols.indexOf(e.key) != -1
+  ) {
+    return;
+  }
+
   if (e.code.startsWith("Digit") || allowedSymbols.indexOf(e.key) != -1) {
     let strEnd = output.innerHTML.at(output.innerHTML.length - 1);
     if (
@@ -91,16 +108,16 @@ document.addEventListener("keypress", (e) => {
       result = 0;
     }
     output.innerHTML += e.key;
-    if (allowedSymbols.includes(e.key) || !output.innerHTML.includes('.')) {
+    if (allowedSymbols.includes(e.key) || !output.innerHTML.includes(".")) {
       operationFlag = true;
     }
   }
-console.log(operationFlag);
+  console.log(operationFlag);
   if (e.code == "Period") {
     let strEnd = output.innerHTML.at(output.innerHTML.length - 1);
     if (allowedSymbols.indexOf(strEnd) != -1) {
       return;
-    }  else if (!operationFlag) {
+    } else if (!operationFlag) {
       return;
     } else {
       output.innerHTML += e.key;
@@ -108,8 +125,7 @@ console.log(operationFlag);
     }
   }
 
-  if (e.code == "Equal") {
-    console.log(output.innerHTML, result);
+  if (e.key == "=") {
     if (output.innerHTML == "=") {
       output.innerHTML = "0";
       return;
@@ -153,7 +169,6 @@ document.addEventListener("click", (e) => {
     div.innerHTML = "history";
     let [outputs] = document.getElementsByClassName("outputs");
     outputs.prepend(div);
-    console.log(document.getElementsByClassName("history"));
   } else {
     let prevOps = document.createElement("div");
     prevOps.setAttribute("class", "prevOps");
@@ -181,7 +196,6 @@ document.addEventListener("click", (e) => {
     });
   }
 });
-
 document.addEventListener("click", (e) => {
   let target = e.target;
   if (target.id != "sin" && target.id != "cos" && target.id != "log") {
