@@ -1,25 +1,25 @@
-let [div] = document.getElementsByClassName("digits");
-let [output] = document.getElementsByClassName("output");
-let allowedSymbols = ["*", "/", "+", "-", "="];
-let operationStorage = [];
+const div = document.querySelector(".digits");
+const output = document.querySelector(".output");
+const allowedSymbols = ["*", "/", "+", "-", "="];
+const operationStorage = [];
+let expression = "0";
+let strEnd;
 let result = 0;
 let operationFlag;
 
-for (let i = 0; i <= 9; i++) {
-  let button = document.createElement("button");
-  button.setAttribute("id", i);
-  button.setAttribute("class", "digit_button");
-  button.innerHTML = i;
-  div.prepend(button);
-}
-
-document.addEventListener("click", (e) => {
-  let target = e.target;
-  let strEnd = output.innerHTML.at(output.innerHTML.length - 1);
-  if (target.tagName != "BUTTON") {
-    return;
+const generateButtons = () => {
+  for (let i = 0; i <= 9; i++) {
+    let button = document.createElement("button");
+    button.setAttribute("id", i);
+    button.setAttribute("class", "digit_button");
+    button.innerHTML = i;
+    div.prepend(button);
   }
+};
+generateButtons();
 
+const onButtonPress = (target) => {
+  let strEnd = output.innerHTML.at(output.innerHTML.length - 1);
   if (target.className == "digit_button") {
     if (output.innerHTML == "0" && target.innerHTML == "0") {
       return;
@@ -38,7 +38,7 @@ document.addEventListener("click", (e) => {
 
     output.innerHTML += target.innerHTML;
   } else if (target.className == "operation") {
-    if (allowedSymbols.indexOf(strEnd) != -1 && target.id != 'clear') {
+    if (allowedSymbols.indexOf(strEnd) != -1 && target.id != "clear") {
     } else {
       switch (target.innerHTML) {
         case "+":
@@ -81,86 +81,74 @@ document.addEventListener("click", (e) => {
       }
     }
   }
-});
+};
 
-document.addEventListener("keypress", (e) => {
+const onKeyPress = (e) => {
   let buf;
-  if ((output.innerHTML == "0" || output.innerHTML == "") && e.key == "-") {
-  } else if (
-    (output.innerHTML == "0" || output.innerHTML == "") &&
-    allowedSymbols.indexOf(e.key) != -1
-  ) {
+  strEnd = expression.at(expression.length - 1)
+  let isFirstLetterOperator =
+    (expression == "0" || expression == "") &&
+    allowedSymbols.indexOf(e.key) != -1;
+  let isLastLetterOperator =
+    allowedSymbols.indexOf(strEnd) != -1 && allowedSymbols.indexOf(e.key) != -1;
+  if (isFirstLetterOperator) {
     return;
   }
-
   if (e.code.startsWith("Digit") || allowedSymbols.indexOf(e.key) != -1) {
-    let strEnd = output.innerHTML.at(output.innerHTML.length - 1);
-    if (
-      allowedSymbols.indexOf(strEnd) != -1 &&
-      allowedSymbols.indexOf(e.key) != -1
-    ) {
+    if (isLastLetterOperator) {
       return;
-    } else if (output.innerHTML == "0" || output.innerHTML == "=") {
-      output.innerHTML = "";
+    } else if (expression == "0" || expression == "=") {
+      expression = "";
     }
-    if (output.innerHTML == result && e.code.startsWith("Digit")) {
-      output.innerHTML = "";
+    if (expression == result && e.code.startsWith("Digit")) {
+      expression = "";
       result = 0;
     }
-    output.innerHTML += e.key;
-    if (allowedSymbols.includes(e.key) || !output.innerHTML.includes(".")) {
+    expression += e.key;
+    output.innerHTML = expression
+    if (allowedSymbols.includes(e.key) || !expression.includes(".")) {
       operationFlag = true;
     }
   }
-  console.log(operationFlag);
   if (e.code == "Period") {
-    let strEnd = output.innerHTML.at(output.innerHTML.length - 1);
     if (allowedSymbols.indexOf(strEnd) != -1) {
       return;
     } else if (!operationFlag) {
       return;
     } else {
-      output.innerHTML += e.key;
+      expression += e.key;
       operationFlag = false;
     }
   }
-
-  if (e.key == "=") {
-    if (output.innerHTML == "=") {
-      output.innerHTML = "0";
-      return;
-    }
-    if (output.innerHTML == result || output.innerHTML == "") {
-      return;
-    }
-    buf = output.innerHTML.slice(0, output.innerHTML.length - 1);
+  console.log(isFirstLetterOperator);
+  console.log(isLastLetterOperator);
+  console.log(strEnd);
+  console.log(expression);
+  if (e.key == "=" || e.code == "Enter") {
+    
+    // if (output.innerHTML == "=") {
+    //   output.innerHTML = "0";
+    //   return;
+    // }
+    // if (expression == result || expression == "") {
+    //   return;
+    // }
+    buf = expression.slice(0, expression.length - 1);
     result = eval(buf);
-    output.innerHTML = result;
+    expression = result;
     operationStorage.push({
       line: buf,
       result: result,
     });
+    output.innerHTML = result;
   }
-});
+};
 
-document.addEventListener("keypress", (e) => {
-  if (output.innerHTML == "0" || output.innerHTML == "") {
-    return;
-  }
-  if (e.code == "Delete") {
-    output.innerHTML = output.innerHTML.slice(0, output.innerHTML.length - 1);
-  }
-});
+const calculateExpression = () => {};
 
-document.addEventListener("click", (e) => {
-  let [history] = document.getElementsByClassName("history");
+const showHistory = () => {
+  let history = document.querySelector(".history");
 
-  if (e.target.className != "history") {
-    return;
-  }
-  if (operationStorage.length == 0) {
-    return;
-  }
   if (history.childNodes.length > 1) {
     history.remove();
     history = null;
@@ -195,9 +183,9 @@ document.addEventListener("click", (e) => {
       output.innerHTML = target.innerHTML;
     });
   }
-});
-document.addEventListener("click", (e) => {
-  let target = e.target;
+};
+
+const calculatetrigonometry = (target) => {
   if (target.id != "sin" && target.id != "cos" && target.id != "log") {
     return;
   }
@@ -230,13 +218,36 @@ document.addEventListener("click", (e) => {
       });
       break;
   }
-});
+};
+
 document.addEventListener("click", (e) => {
   let target = e.target;
-  if (target.className != "outputs") {
-    let [outputs] = document.getElementsByClassName("outputs");
+
+  if (target.tagName == "BUTTON") {
+    calculatetrigonometry(target);
+    onButtonPress(target);
+    if (e.target.className == "history" && operationStorage.length != 0) {
+      showHistory();
+    }
+  } else if (target.className != "outputs") {
+    let outputs = document.querySelector(".outputs");
     outputs.removeAttribute("id");
     return;
+  } else {
+    target.setAttribute("id", "focused_outputs");
   }
-  target.setAttribute("id", "focused_outputs");
+});
+
+document.addEventListener("keypress", (e) => {
+  onKeyPress(e);
+});
+
+document.addEventListener("keydown", (e) => {
+  if (expression == "0" || expression == "") {
+    return;
+  }
+  if (e.code == "Backspace") {
+    expression = expression.slice(0, expression.length - 1);
+    output.innerHTML = expression;
+  }
 });
