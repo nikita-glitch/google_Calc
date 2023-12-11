@@ -1,9 +1,9 @@
-//import { convert } from "./OPN";
 let [div] = document.getElementsByClassName("digits");
 let [output] = document.getElementsByClassName("output");
 let allowedSymbols = ["*", "/", "+", "-", "="];
 let operationStorage = [];
 let result = 0;
+let operationFlag;
 
 for (let i = 0; i <= 9; i++) {
   let button = document.createElement("button");
@@ -75,7 +75,7 @@ document.addEventListener("click", (e) => {
 
 document.addEventListener("keypress", (e) => {
   let buf;
-
+  
   if (e.code.startsWith("Digit") || allowedSymbols.indexOf(e.key) != -1) {
     let strEnd = output.innerHTML.at(output.innerHTML.length - 1);
     if (
@@ -91,16 +91,20 @@ document.addEventListener("keypress", (e) => {
       result = 0;
     }
     output.innerHTML += e.key;
+    if (allowedSymbols.includes(e.key) || !output.innerHTML.includes('.')) {
+      operationFlag = true;
+    }
   }
+console.log(operationFlag);
   if (e.code == "Period") {
     let strEnd = output.innerHTML.at(output.innerHTML.length - 1);
     if (allowedSymbols.indexOf(strEnd) != -1) {
       return;
-    } else if (output.innerHTML.includes(".")) {
-      //?
+    }  else if (!operationFlag) {
       return;
     } else {
       output.innerHTML += e.key;
+      operationFlag = false;
     }
   }
 
@@ -124,20 +128,19 @@ document.addEventListener("keypress", (e) => {
 });
 
 document.addEventListener("keypress", (e) => {
-  //ne rabotaet
   if (output.innerHTML == "0" || output.innerHTML == "") {
     return;
   }
-  if (e.code == "Backspace") {
-    output.innerHTML = output.innerHTML.slice(0, output.innerHTML.length - 2);
+  if (e.code == "Delete") {
+    output.innerHTML = output.innerHTML.slice(0, output.innerHTML.length - 1);
   }
 });
 
 document.addEventListener("click", (e) => {
   let [history] = document.getElementsByClassName("history");
 
-  if (e.target.className != 'history') {
-    return
+  if (e.target.className != "history") {
+    return;
   }
   if (operationStorage.length == 0) {
     return;
@@ -150,8 +153,7 @@ document.addEventListener("click", (e) => {
     div.innerHTML = "history";
     let [outputs] = document.getElementsByClassName("outputs");
     outputs.prepend(div);
-    console.log(document.getElementsByClassName('history'));
-    
+    console.log(document.getElementsByClassName("history"));
   } else {
     let prevOps = document.createElement("div");
     prevOps.setAttribute("class", "prevOps");
