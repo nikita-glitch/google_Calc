@@ -17,145 +17,151 @@ const generateButtons = () => {
   }
 };
 generateButtons();
-
+const handlePointKeypress = (e, operationFlag) => {
+  if (allowedSymbols.indexOf(strEnd) != -1) {
+    return;
+  } else if (!operationFlag) {
+    return;
+  } else {
+    expression += e.key;
+    
+  }
+  return false;
+}
+const handlePointClick = () => {
+  strEnd = expression.at(expression.length - 1);
+  if (expression.endsWith(".")) {
+    return;
+  }
+  if (expression == "0") {
+    expression += ".";
+  } else if (allowedSymbols.indexOf(strEnd) != -1) {
+    expression += "0.";
+  } else {
+    expression += ".";
+  }
+  output.innerHTML = expression;
+};
+const handleEqualityClick = () => {
+  let buf;
+  if (expression == result) {
+    return;
+  }
+  if (expression == "0") {
+    return;
+  }
+  if (expression == "=") {
+    expression = "0";
+    return;
+  }
+  if (expression.endsWith("=")) {
+    buf = expression.slice(0, expression.length - 1);
+  } else {
+    buf = expression;
+  }
+  result = eval(buf);
+  operationStorage.push({
+    line: buf,
+    result: result,
+  });
+  expression = "";
+  expression += result;
+  output.innerHTML = expression;
+};
+const handleClear = () => {
+  if (expression == "0") {
+    return;
+  }
+  expression = expression.slice(0, expression.length - 1);
+  if (expression == "") {
+    expression = "0";
+  }
+  output.innerHTML = expression;
+};
 const onButtonPress = (target) => {
-  let strEnd = output.innerHTML.at(output.innerHTML.length - 1);
+  strEnd = expression.at(expression.length - 1);
   if (target.className == "digit_button") {
-    if (output.innerHTML == "0" && target.innerHTML == "0") {
+    if (expression == "0" && target.innerHTML == "0") {
       return;
     }
     if (
       target.className == "digit_button" &&
-      output.innerHTML == result &&
-      output.innerHTML == "0"
+      expression == result &&
+      expression == "0"
     ) {
-      output.innerHTML = "";
+      expression = "";
       result = 0;
     }
-    if (output.innerHTML == "0" && target.innerHTML != "0") {
-      output.innerHTML = "";
+    if (expression == "0" && target.innerHTML != "0") {
+      expression = "";
     }
 
-    output.innerHTML += target.innerHTML;
+    expression += target.innerHTML;
   } else if (target.className == "operation") {
-    if (allowedSymbols.indexOf(strEnd) != -1 && target.id != "clear") {
+    let isLastLetterOperator =
+      allowedSymbols.indexOf(strEnd) != -1 && target.id != "clear";
+    if (isLastLetterOperator) {
+      return;
     } else {
-      switch (target.innerHTML) {
-        case "+":
-          output.innerHTML += "+";
-          break;
-        case "-":
-          output.innerHTML += "-";
-          break;
-        case "*":
-          output.innerHTML += "*";
-          break;
-        case "/":
-          output.innerHTML += "/";
-          break;
-        case "=":
-          result = eval(output.innerHTML);
-          operationStorage.push({
-            line: output.innerHTML,
-            result: result,
-          });
-          output.innerHTML = result;
-          break;
-        case "C":
-          output.innerHTML = "0";
-          result = 0;
-          break;
-        case ".":
-          let strEnd = output.innerHTML.at(output.innerHTML.length - 1);
-          if (output.innerHTML.endsWith(".")) {
-            return;
-          }
-          if (output.innerHTML == "0") {
-            output.innerHTML += ".";
-          } else if (allowedSymbols.indexOf(strEnd) != -1) {
-            output.innerHTML += "0.";
-          } else {
-            output.innerHTML += ".";
-          }
-          break;
+      if (target.innerHTML == "=") {
+        handleEqualityClick();
+        return;
       }
+      if (target.innerHTML == "C") {
+        handleClear();
+        return;
+      }
+      if (target.innerHTML == ".") {
+        handlePointClick();
+        return;
+      }
+      expression += target.innerHTML;
     }
   }
+  output.innerHTML = expression;
 };
 
 const onKeyPress = (e) => {
   let buf;
-  strEnd = expression.at(expression.length - 1)
+  strEnd = expression.at(expression.length - 1);
   let isFirstLetterOperator =
     (expression == "0" || expression == "") &&
     allowedSymbols.indexOf(e.key) != -1;
   let isLastLetterOperator =
     allowedSymbols.indexOf(strEnd) != -1 && allowedSymbols.indexOf(e.key) != -1;
-  if (isFirstLetterOperator) {
+  let isInputCorrect =
+    e.code.startsWith("Digit") || allowedSymbols.indexOf(e.key) != -1;
+  let isOperation = allowedSymbols.includes(e.key) || !expression.includes(".");
+  if (isFirstLetterOperator || isLastLetterOperator) {
     return;
   }
-  if (e.code.startsWith("Digit") || allowedSymbols.indexOf(e.key) != -1) {
-    if (isLastLetterOperator) {
-      return;
-    } else if (expression == "0" || expression == "=") {
+  if (isInputCorrect) {
+    if (expression == "0" || expression == "=") {
       expression = "";
     }
-    if (expression == result && e.code.startsWith("Digit")) {
-      expression = "";
-      result = 0;
-    }
-    expression += e.key;
-    output.innerHTML = expression
-    if (allowedSymbols.includes(e.key) || !expression.includes(".")) {
+    if (isOperation) {
       operationFlag = true;
     }
+    expression += e.key;
   }
   if (e.code == "Period") {
-    if (allowedSymbols.indexOf(strEnd) != -1) {
-      return;
-    } else if (!operationFlag) {
-      return;
-    } else {
-      expression += e.key;
-      operationFlag = false;
-    }
+    operationFlag = handlePointKeypress(e, operationFlag);
   }
-  console.log(isFirstLetterOperator);
-  console.log(isLastLetterOperator);
-  console.log(strEnd);
-  console.log(expression);
   if (e.key == "=" || e.code == "Enter") {
-    
-    // if (output.innerHTML == "=") {
-    //   output.innerHTML = "0";
-    //   return;
-    // }
-    // if (expression == result || expression == "") {
-    //   return;
-    // }
-    buf = expression.slice(0, expression.length - 1);
-    result = eval(buf);
-    expression = result;
-    operationStorage.push({
-      line: buf,
-      result: result,
-    });
-    output.innerHTML = result;
+    handleEqualityClick();
   }
+  output.innerHTML = expression;
 };
-
-const calculateExpression = () => {};
 
 const showHistory = () => {
   let history = document.querySelector(".history");
-
   if (history.childNodes.length > 1) {
     history.remove();
     history = null;
     let div = document.createElement("div");
     div.setAttribute("class", "history");
     div.innerHTML = "history";
-    let [outputs] = document.getElementsByClassName("outputs");
+    let outputs = document.querySelector(".outputs");
     outputs.prepend(div);
   } else {
     let prevOps = document.createElement("div");
@@ -166,11 +172,11 @@ const showHistory = () => {
       let line = document.createElement("span");
       let result = document.createElement("span");
       let container = document.createElement("div");
-      prevOps.append(container);
       line.setAttribute("class", "line");
       result.setAttribute("class", "result");
       line.innerHTML = item.line;
       result.innerHTML = item.result;
+      prevOps.append(container);
       container.append(line);
       container.append("=");
       container.append(result);
@@ -180,56 +186,61 @@ const showHistory = () => {
       if (target.tagName != "SPAN") {
         return;
       }
-      output.innerHTML = target.innerHTML;
+      expression = target.innerHTML;
+      output.innerHTML = expression;
     });
   }
 };
 
 const calculatetrigonometry = (target) => {
-  if (target.id != "sin" && target.id != "cos" && target.id != "log") {
-    return;
-  }
-  let buf = output.innerHTML;
-  let strEnd = output.innerHTML.at(output.innerHTML.length - 1);
+  let buf = expression;
+  let strEnd = expression.at(expression.length - 1);
   if (allowedSymbols.indexOf(strEnd) != -1) {
-    buf = output.innerHTML.slice(0, output.innerHTML.length - 1);
+    buf = expression.slice(0, expression.length - 1);
   }
   buf = eval(buf);
   switch (target.id) {
     case "sin":
-      output.innerHTML = result = Math.sin(buf);
+      result = Math.sin(buf);
       operationStorage.push({
         line: `sin(${buf})`,
         result: Math.sin(buf),
       });
       break;
     case "cos":
-      output.innerHTML = result = Math.cos(buf);
+      result = Math.cos(buf);
       operationStorage.push({
         line: `cos(${buf})`,
         result: Math.cos(buf),
       });
       break;
     case "log":
-      output.innerHTML = result = Math.log10(buf);
+      result = Math.log10(buf);
       operationStorage.push({
         line: `log(${buf})`,
         result: Math.log10(buf),
       });
       break;
   }
+  expression = "";
+  expression += result;
+  output.innerHTML = expression;
 };
 
 document.addEventListener("click", (e) => {
   let target = e.target;
 
   if (target.tagName == "BUTTON") {
-    calculatetrigonometry(target);
-    onButtonPress(target);
-    if (e.target.className == "history" && operationStorage.length != 0) {
-      showHistory();
+    if (target.id != "sin" && target.id != "cos" && target.id != "log") {
+      onButtonPress(target);
+    } else {
+      calculatetrigonometry(target);
     }
-  } else if (target.className != "outputs") {
+  }
+  if (e.target.className == "history" && operationStorage.length != 0) {
+    showHistory();
+  }
+  if (target.className != "outputs") {
     let outputs = document.querySelector(".outputs");
     outputs.removeAttribute("id");
     return;
@@ -247,7 +258,6 @@ document.addEventListener("keydown", (e) => {
     return;
   }
   if (e.code == "Backspace") {
-    expression = expression.slice(0, expression.length - 1);
-    output.innerHTML = expression;
+    handleClear();
   }
 });
