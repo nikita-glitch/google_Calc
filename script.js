@@ -24,18 +24,19 @@ const handlePointKeypress = (e, operationFlag) => {
     return;
   } else {
     expression += e.key;
-    
   }
   return false;
-}
+};
 const handlePointClick = () => {
   strEnd = expression.at(expression.length - 1);
+  console.log(strEnd);
   if (expression.endsWith(".")) {
     return;
   }
   if (expression == "0") {
     expression += ".";
-  } else if (allowedSymbols.indexOf(strEnd) != -1) {
+  }
+  if (allowedSymbols.indexOf(strEnd) != -1) {
     expression += "0.";
   } else {
     expression += ".";
@@ -99,7 +100,9 @@ const onButtonPress = (target) => {
     expression += target.innerHTML;
   } else if (target.className == "operation") {
     let isLastLetterOperator =
-      allowedSymbols.indexOf(strEnd) != -1 && target.id != "clear";
+      allowedSymbols.indexOf(strEnd) != -1 &&
+      target.id != "clear" &&
+      target.id != "point";
     if (isLastLetterOperator) {
       return;
     } else {
